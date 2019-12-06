@@ -21,14 +21,9 @@
     <ClCompile Include="..\OpenGL-Game\ShaderFunctions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\OpenGL-Game\Camera.cpp">
+    <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\OpenGL-Game\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\OpenGL-Game\FS.glsl">
@@ -57,5 +52,16 @@
     <Image Include="..\OpenGL-Game\UV_Grid.jpg">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="flower.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="fire.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

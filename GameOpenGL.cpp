@@ -37,15 +37,15 @@ struct vertex
 vertex plan[] =
 {
 
-	{vec3(20, -3,-20),vec3(0,-1,0)},
-	{vec3(20, -3,20), vec3(1,-1,0)},
-	{vec3(-20,-3,20),  vec3(0,-1,1)},
-	{vec3(-20,-3,-20), vec3(0,1,0)}
+	{vec3(20, -5,-20),vec3(0,-1,0)},
+	{vec3(20, -5,20), vec3(1,-1,0)},
+	{vec3(-20,-5,20),  vec3(0,-1,1)},
+	{vec3(-20,-5,-20), vec3(0,1,0)}
 
 };
 
 const GLint WIDTH = 600, HEIGHT = 600;
-GLuint VAO, CVBO, TVBO, SVBO, PVBO, programId, IBO, TextureId, TexturePlan;
+GLuint VAO, CVBO, TVBO, SVBO, PVBO, programId, IBO, TextureId, TexturePlan,TextureFlower;
 GLuint modelMatLoc, viewMatLoc, projMatLoc;
 GLuint InitShader(const char* vertex_shader_file_name, const char* fragment_shader_file_name);
 
@@ -58,8 +58,7 @@ vec3 Up = cam.GetUp();
 vec3 rightDir = cam.GetrightDir();
 vec3 horizForward = cam.Gethorzfor();
 
-//vertex* cubevrtices(float x)
-//{
+
 
 vertex cube_core_vertices[] = {
 {vec3(-0.5, 0.5, 0.5),vec3(1,0,0),vec2(0,1)},
@@ -71,7 +70,7 @@ vertex cube_core_vertices[] = {
 {vec3(-0.5, -0.5, -0.5),vec3(1,1,1)},
 {vec3(-0.5, 0.5, -0.5),vec3(0,0,0)}
 };
-//return cube_core_vertices;
+
 
 #pragma Region Sphere
 vector<vertex> sphere_vertices;
@@ -304,8 +303,8 @@ void BindTriangle()
 
 void CompileShader()
 {
-	programId = InitShader("UnlitVS.glsl", "UnlitFS.glsl");
-	//programId = InitShader("VS.glsl", "FS.glsl");
+	//programId = InitShader("UnlitVS.glsl", "UnlitFS.glsl");
+	programId = InitShader("VS.glsl", "FS.glsl");
 	glUseProgram(programId);
 }
 
@@ -353,7 +352,7 @@ int Init()
 	else
 	{
 		glGenTextures(1, &TextureId);
-		glActiveTexture(GL_TEXTURE0);
+		//glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, TextureId);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img.getSize().x, img.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, img.getPixelsPtr());
 
@@ -369,9 +368,26 @@ int Init()
 	else
 	{
 		glGenTextures(1, &TexturePlan);
-		glActiveTexture(GL_TEXTURE1);
+		//glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, TexturePlan);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, planeImg.getSize().x, planeImg.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, planeImg.getPixelsPtr());
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	}
+
+
+	Image flowerImg;
+	if (!flowerImg.loadFromFile("fire.jpg"))
+		cout << "Error Loading Image";
+	else
+	{
+		glGenTextures(1, &TextureFlower);
+		//glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, TextureFlower);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, flowerImg.getSize().x, flowerImg.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, flowerImg.getPixelsPtr());
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -386,13 +402,19 @@ int Init()
 }
 
 float theta = 0;
+float x = 0;
 void Update()
 {
 	theta += 0.001f;
+	x += 0.001f;
 
 	cam.UpdateDirections();
 	rightDir = cam.GetrightDir();
 	horizForward = cam.Gethorzfor();
+
+	camEye = cam.GetCamEye();
+	camLook = cam.GetCamLook();
+	Up = cam.GetUp();
 }
 
 void Render()
@@ -415,6 +437,26 @@ void Render()
 
 	GLint textureLocation = glGetUniformLocation(programId, "tex");
 
+	BindCube();
+	mat4 ModelMat2 = glm::translate(glm::vec3(x+1.f, 0, -0.8f)) *
+		glm::rotate(0 * 180 / 3.14f, glm::vec3(1, 1, 1)) *
+		glm::scale(glm::vec3(0.5, 0.5, 0.5));
+	glUniformMatrix4fv(modelMatLoc, 1, GL_FALSE, glm::value_ptr(ModelMat2));
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, TextureId);
+	glUniform1i(textureLocation, 0);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
+
+	BindCube();
+	mat4 ModelMat = glm::translate(glm::vec3(-1.f, 0, -0.8f)) *
+		glm::rotate(0 * 180 / 3.14f, glm::vec3(1, 1, 1)) *
+		glm::scale(glm::vec3(0.5, 0.5, 0.5));
+	glUniformMatrix4fv(modelMatLoc, 1, GL_FALSE, glm::value_ptr(ModelMat));
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, TextureId);
+	glUniform1i(textureLocation, 0);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
+
 	BindPlan();
 	mat4 ModelMat3 = glm::translate(glm::vec3(0, 0, 0)) *
 		glm::rotate(0 * 180 / 3.14f, glm::vec3(1, 1, 1)) *
@@ -423,24 +465,9 @@ void Render()
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, TexturePlan);
 	glUniform1i(textureLocation, 0);
+	
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
-	BindCube();
-	mat4 ModelMat = glm::translate(glm::vec3(-1.f, 0, -0.8f)) *
-		glm::rotate(theta * 180 / 3.14f, glm::vec3(1, 1, 1)) *
-		glm::scale(glm::vec3(0.5, 0.5, 0.5));
-	glUniformMatrix4fv(modelMatLoc, 1, GL_FALSE, glm::value_ptr(ModelMat));
-	/*glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, TextureId);
-	glUniform1i(textureLocation, 0);*/
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
-
-	BindCube();
-	mat4 ModelMat2 = glm::translate(glm::vec3(1.f, 0, -0.8f)) *
-		glm::rotate(theta * 180 / 3.14f, glm::vec3(1, 1, 1)) *
-		glm::scale(glm::vec3(0.5, 0.5, 0.5));
-	glUniformMatrix4fv(modelMatLoc, 1, GL_FALSE, glm::value_ptr(ModelMat2));
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
 
 }
 
@@ -477,8 +504,23 @@ int main()
 				lastMouse = mouseNow;
 
 				break;
+			}
 
-
+			if (Keyboard::isKeyPressed(Keyboard::Up))
+			{
+				cam.Move('f');
+			}
+			if (Keyboard::isKeyPressed(Keyboard::Down))
+			{
+				cam.Move('b');
+			}
+			if (Keyboard::isKeyPressed(Keyboard::Left))
+			{
+				cam.Move('l');
+			}
+			if (Keyboard::isKeyPressed(Keyboard::Right))
+			{
+				cam.Move('r');
 			}
 		}
 

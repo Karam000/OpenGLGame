@@ -54,3 +54,27 @@ vec3 Camera::MouseFollow(vec3 lastMouse, vec3 mouseNow)
 
 	return camLook;
 }
+
+void Camera::Move(char dir)
+{
+	switch (dir)
+	{
+	case 'f':
+		camEye += 0.1f * normalize(horizForward);
+		break;
+	case 'b':
+		camEye -= 0.1f * normalize(horizForward);
+		break;
+	case 'r':
+		camEye += 0.1f * normalize(rightDir);
+		camLook += 0.1f * normalize(rightDir);
+		break;
+	case 'l':
+		camEye -= 0.1f * normalize(rightDir);
+		camLook -= 0.1f * normalize(rightDir);
+		break;
+
+	}
+
+}
+

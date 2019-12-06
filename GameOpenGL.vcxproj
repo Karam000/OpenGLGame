@@ -153,12 +153,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\OpenGL-Game\Camera.cpp" />
     <ClCompile Include="..\OpenGL-Game\ShaderFunctions.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GameOpenGL.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\OpenGL-Game\Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\OpenGL-Game\FS.glsl" />
@@ -171,6 +168,11 @@
   <ItemGroup>
     <Image Include="..\OpenGL-Game\grass.jpg" />
     <Image Include="..\OpenGL-Game\UV_Grid.jpg" />
+    <Image Include="fire.jpg" />
+    <Image Include="flower.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Camera.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

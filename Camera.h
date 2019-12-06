@@ -7,6 +7,7 @@
 #include<gl/glm/gtx/transform.hpp>
 
 using namespace glm;
+using namespace std;
 
 #pragma once
 class Camera
@@ -26,7 +27,7 @@ private:
 	vec4 lookDummy;
 
 public:
-	Camera() :Eye{vec3(0,0,3)}, lookVec{vec3(0,0,-2)}, Up{vec3(0,1,0)}, forwardDir{vec3(0, 0, -1)}, lookDummy{vec4(0,0,-1,0)}
+	Camera() :Eye{vec3(0,0,5)}, camLook{vec3(0,-5,-5)}, Up{vec3(0,1,0)}, forwardDir{vec3(0, 0, -1)}, lookDummy{vec4(0,0,-1,0)}
 	{
 		camEye = Eye;
 		rightDir = cross(normalize(forwardDir), normalize(Up));
@@ -44,7 +45,8 @@ public:
 	vec3 Gethorzfor();
 
 	void UpdateDirections();
+	
 	vec3 MouseFollow(vec3, vec3);
-
+	void Move(char);
 };
 
